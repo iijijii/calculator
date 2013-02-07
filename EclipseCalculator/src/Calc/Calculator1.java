@@ -41,6 +41,9 @@ public class Calculator1 {
 		 * 2. 逆ポーランド記法の数式を受け取り、計算結果を出力する。 入力が数式として解釈できない場合や計算できない式の
 		 * 場合エラーの旨を出力する。
 		 */
+
+		// TODO
+		// if,else ifの順番直す（大枠把握）（try catch使用検討
 		int val1, val2;
 		int ans = 0;
 
@@ -56,27 +59,43 @@ public class Calculator1 {
 			else if (args[i].equals("+")) {
 				val1 = stackObject.pop();
 				val2 = stackObject.pop();
-				stackObject.push(ans = val1 + val2);
+				stackObject.push(val2 + val1);
 			} else if (args[i].equals("-")) {
 				val1 = stackObject.pop();
 				val2 = stackObject.pop();
-				stackObject.push(ans = val1 - val2);
+				stackObject.push(val2 - val1);
 			} else if (args[i].equals("*")) {
 				val1 = stackObject.pop();
 				val2 = stackObject.pop();
-				stackObject.push(ans = val1 * val2);
+				stackObject.push(val2 * val1);
 			} else if (args[i].equals("/")) {
 				val1 = stackObject.pop();
 				val2 = stackObject.pop();
 				if (val1 == 0) {
 					printStream.println("エラー（０で割れません）");
-				}
-				stackObject.push(ans = val1 / val2);
+					break;// 入力待ちに戻る
+				} else
+					stackObject.push(val2 / val1);
 			}
-			// 数字でも演算子でもない場合
+
+			// 入力がexitの場合
+			else if (args[i].equals("exit")) {
+				System.exit(0);
+			}
+			// TODO
+			// 数式として読めない場合（→(!=「数字の数が演算子の数より１多い」)&&(？演算子と数式の順番？)
+			else if (numOfFig() != numOfOpe() + 1 || order() == false) {
+				printStream.println("エラー（逆ポーランド記法の数式を入力してください）");
+				break;
+			}
+
+			// 入力が数字でも演算子でもexitでもない場合
 			else {
-				printStream.println("エラー（数字か演算子（+,-,*,/）を入力してください）");
+				printStream.println("エラー（数字か演算子（+,-,*,/,）を入力してください）");
+				break;// 入力待ちに戻る
 			}
+			// 入力が終了した場合
+			ans = stackObject.pop();
 			printStream.print(ans);
 		}
 	}
@@ -89,5 +108,23 @@ public class Calculator1 {
 		} catch (NumberFormatException e) {
 			return false;
 		}
+	}
+
+	// 数字の数
+	public static int numOfFig() {
+
+	}
+
+	// 演算子の数
+	public static int numOfOpe() {
+
+	}
+
+	// 順番が正しい条件
+	/*
+	 * ・最初２つn,最後o,間は？ ・（（数字集合）＝（演算子集合）＋１）その後（数字集合）＝（演算子集合）？
+	 */
+	public boolean order() {
+
 	}
 }
