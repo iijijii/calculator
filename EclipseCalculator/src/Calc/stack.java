@@ -21,7 +21,14 @@ public class stack {
 	// ポップメソッド
 	public int pop() {
 		point -= 1;
+		if (point < 0) {
+			System.out.println("エラー（逆ポーランド記法の数式を入力してください。）");
+		}
 		return stack[point];
+	}
+
+	public int getLength() {
+		return point;
 	}
 
 }

@@ -7,17 +7,10 @@ package Calc;
  * */
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
 
 public class Calculator1 {
 	public static void main(String[] args) throws IOException {
@@ -27,93 +20,61 @@ public class Calculator1 {
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-		InputStream FileInputStream = new FileInputStream(new File("fileIn"));
-		InputStreamReader FileInputStreamReader = new InputStreamReader(
-				FileInputStream);
-		BufferedReader FileBufferedReader = new BufferedReader(
-				FileInputStreamReader);
-
 		PrintStream printStream = System.out;
-
-		OutputStream FileOutputStream = new FileOutputStream(
-				new File("fileOut"));
+		printStream.println("逆ポーランド記法の数式（値と値の間、値と演算子の間はスペースで区切る）を入力してください");
 
 		String input = bufferedReader.readLine();
-		String inputFile = FileBufferedReader.readLine();
 
 		// ③加工したものを出力する
 
 		while (input != null) {
-			printStream.println(process(split(input), classify(input)));
+			printStream.println(process(split(input)));
+			if (process(split(input)) == "入力終了") {
+				break;
+			}
 			input = bufferedReader.readLine();
 		}
 		System.exit(0);
-
 	}// main終わり
 
-	public static EnumSet<CalcOption> classify(String in){
-		
-		List<String> argArray = Arrays.asList();
-		EnumSet<CalcOption> calcOption = EnumSet.noneOf(CalcOption.class);
-		while (in =="exit") {
-			calcOption.add(CalcOption.EXIT);
-		}
-		while () {
-			calcOption.add(CalcOption.);
-		}
-		return calcOption;
-	}
-
-	/*
-	 * 1.入力が数式として解釈できる→(「数字の数が演算子の数より１多い」)かつ(演算子と数式の順番が正しい) 2.入力が数字、演算子→計算できる 3.
-	 * 順番が正しい条件 /* ・最初２つn,最後o,間は？ ・（（数字集合）＝（演算子集合）＋１）その後（数字集合）＝（演算子集合）？
-	 */
-
-	// 入力を１文字ずつに分解して配列にする
+	// 入力を値ごとに分解して配列を作り直す
 	public static String[] split(String regex) {
+
 		String[] s = regex.split("");
+
+		for (int i = 0; i < s.length; i++) {
+			if (isInteger(s[i]) && isInteger(s[i + 1])) {
+				s[i] = s[i] + s[i + 1];
+				for (int j = i + 1; j < s.length - 1; j++) {
+					s[j] = s[j + 1];
+					s[s.length - (i + 1)] = null;
+				}
+			}
+			if (s[i] == " ") {
+				for (int j = i + 1; j < s.length; j++) {
+					s[j - 1] = s[j];
+					s[s.length - (i + 1)] = null;
+				}
+			}
+
+		}
 		return s;
 	}
 
 	// ②入力を加工する（計算結果を返す）
-	public static String process(String[] array , EnumSet<CalcOption> options) {
-		
-		 
-		// （１）入力が数式として解釈できない場合や計算できない式の 場合エラーの旨を出力す
-			while () {
-				return "エラー（逆ポーランド記法の数式を入力してください。）";
-			}
-			//（２） 入力が数式として解釈できない場合
-			while () {
-				return "エラー（数字か演算子（+,-,*,/,）を入力してください）";
-			}
+	public static String process(String[] array) {
 
-			// （３）入力がexitの場合
-			while () {
-				System.exit(0);
-			}
-
-			//（４）入力が計算できる場合
-	while() {
-		
 		int val1, val2;
 		int ans = 0;
-		
-		 int numOfFig = 0;
-		 int numOfOpe = 0;
-				
+
 		// スタックを作る（１行分(readline分)の長さのスタック）
 		stack stackObject = new stack(array.length);
 
 		for (int i = 0; i < array.length; i++) {
-			
-			if(isInteger(array[i])){
-				numOfFig ++;
+			if (array[0] == "e" && array[1] == "x" && array[2] == "i"
+					&& array[3] == "t") {
+				return "入力終了";
 			}
-			if(array[i].equals("+")||array[i].equals("-")||array[i].equals("*")||array[i].equals("/")){
-				numOfOpe ++;
-			}
-			
 			// 入力が整数の場合(→文字を数字にしてpush
 			if (isInteger(array[i])) {
 				stackObject.push(Integer.parseInt(array[i]));
@@ -140,11 +101,14 @@ public class Calculator1 {
 					stackObject.push(val2 / val1);
 				}
 			}
+			// 入力が数字でも演算子でもexitでもない場合
+			else {
+				return "エラー（数字か演算子（+,-,*,/）かexitを入力してください）";
+			}
 		}
 		ans = stackObject.pop();
 		return Integer.toString(ans);
-	}
-	}//process終了
+	}// process終了
 
 	// 数字かどうか
 	public static boolean isInteger(String num) {
