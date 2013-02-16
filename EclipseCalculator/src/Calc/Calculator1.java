@@ -21,17 +21,18 @@ public class Calculator1 {
 		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
 		PrintStream printStream = System.out;
-		printStream.println("逆ポーランド記法の数式（値と値の間、値と演算子の間はスペースで区切る）を入力してください");
+		printStream.println("逆ポーランド記法の数式（値と値の間はスペースで区切る）を入力してください");
 
 		String input = bufferedReader.readLine();
 
 		// ③加工したものを出力する
 
 		while (input != null) {
-			printStream.println(process(split(input)));
-			if (process(split(input)) == "入力終了") {
+			if (input == "exit") {
+				printStream.println("入力終了");
 				break;
 			}
+			printStream.println(process(split(input)));
 			input = bufferedReader.readLine();
 		}
 		System.exit(0);
@@ -42,21 +43,16 @@ public class Calculator1 {
 
 		String[] s = regex.split("");
 
+		int point = 0;// ずらした数
 		for (int i = 0; i < s.length; i++) {
-			if (isInteger(s[i]) && isInteger(s[i + 1])) {
-				s[i] = s[i] + s[i + 1];
-				for (int j = i + 1; j < s.length - 1; j++) {
-					s[j] = s[j + 1];
-					s[s.length - (i + 1)] = null;
-				}
-			}
-			if (s[i] == " ") {
-				for (int j = i + 1; j < s.length; j++) {
-					s[j - 1] = s[j];
-					s[s.length - (i + 1)] = null;
-				}
-			}
+			// (1)文字が数字続きなら一つのインデックスにいれて、(２)左にずらし、(３)最後に空文字
 
+			while (isInteger(s[i]) && isInteger(s[i + 1])) {
+				s[i] = s[i] + s[i + 1]; // (1
+				System.arraycopy(s, i + 2, s, i + 1, s.length - (i + 2));// (2
+				point++;
+				s[s.length - (point)] = ""; // 3
+			}
 		}
 		return s;
 	}
@@ -71,37 +67,46 @@ public class Calculator1 {
 		stack stackObject = new stack(array.length);
 
 		for (int i = 0; i < array.length; i++) {
-			if (array[0] == "e" && array[1] == "x" && array[2] == "i"
-					&& array[3] == "t") {
-				return "入力終了";
-			}
 			// 入力が整数の場合(→文字を数字にしてpush
 			if (isInteger(array[i])) {
 				stackObject.push(Integer.parseInt(array[i]));
 			}
 			// 入力が演算子の場合(→数字をpopして計算結果をpush
-			else if (array[i].equals("+")) {
-				val1 = stackObject.pop();
-				val2 = stackObject.pop();
-				stackObject.push(val2 + val1);
-			} else if (array[i].equals("-")) {
-				val1 = stackObject.pop();
-				val2 = stackObject.pop();
-				stackObject.push(val2 - val1);
-			} else if (array[i].equals("*")) {
-				val1 = stackObject.pop();
-				val2 = stackObject.pop();
-				stackObject.push(val2 * val1);
-			} else if (array[i].equals("/")) {
-				val1 = stackObject.pop();
-				val2 = stackObject.pop();
-				if (val1 == 0) {
-					return "エラー（０で割れません）";
+			// popする前にstackObject.getLength>2を確認、否ならreturn"エラー（逆ポーランド記法の数式を入力してください。）"
+
+			else if (array[i].equals("+") || array[i].equals("-")
+					|| array[i].equals("*") || array[i].equals("/")) {
+				if (stackObject.getLength() >= 2) {
+					if (array[i].equals("+")) {
+						val1 = stackObject.pop();
+						val2 = stackObject.pop();
+						stackObject.push(val2 + val1);
+					} else if (array[i].equals("-")) {
+						val1 = stackObject.pop();
+						val2 = stackObject.pop();
+						stackObject.push(val2 - val1);
+					} else if (array[i].equals("*")) {
+						val1 = stackObject.pop();
+						val2 = stackObject.pop();
+						stackObject.push(val2 * val1);
+					} else if (array[i].equals("/")) {
+						val1 = stackObject.pop();
+						val2 = stackObject.pop();
+						if (val1 == 0) {
+							return "エラー（０で割れません）";
+						} else {
+							stackObject.push(val2 / val1);
+						}
+					}
 				} else {
-					stackObject.push(val2 / val1);
+					return "エラー（逆ポーランド記法の数式を入力してください。）";
 				}
 			}
-			// 入力が数字でも演算子でもexitでもない場合
+
+			// 入力がスペース
+			else if (array[i].equals(" ") || array[i].equals("")) {
+			}
+			// 入力が数字でも演算子でもexitでもスペースでもない場合
 			else {
 				return "エラー（数字か演算子（+,-,*,/）かexitを入力してください）";
 			}
