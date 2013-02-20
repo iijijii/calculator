@@ -7,7 +7,7 @@ import org.junit.Test;
 public class testSplit {
 
 	@Test
-	public void testSplit() {
+	public void test() {
 		String testval = "1 1 +";
 		String[] actual = Calculator1.split(testval);
 		String[] expected = { "", "1", " ", "1", " ", "+" };

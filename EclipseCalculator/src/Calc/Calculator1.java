@@ -117,8 +117,9 @@ public class Calculator1 {
 
 	// 数字かどうか
 	public static boolean isInteger(String num) {
+
 		try {
-			int n = Integer.parseInt(num);
+			Integer.parseInt(num);
 			return true;
 		} catch (NumberFormatException e) {
 			return false;
