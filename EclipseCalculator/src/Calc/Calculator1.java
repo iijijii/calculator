@@ -24,17 +24,14 @@ public class Calculator1 {
 		PrintStream printStream = System.out;
 		printStream.println("逆ポーランド記法の数式（値と値の間はスペースで区切る）を入力してください");
 
-		String input = bufferedReader.readLine();
-
 		// ③加工したものを出力する
-
-		while (input != null) {
+		while (true) {
+			String input = bufferedReader.readLine();
 			if (input == "exit") {
 				printStream.println("入力終了");
 				break;
 			}
 			printStream.println(process(split(input)));
-			input = bufferedReader.readLine();
 		}
 		System.exit(0);
 	}// main終わり
