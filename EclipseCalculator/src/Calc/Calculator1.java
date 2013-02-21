@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Calculator1 {
 	public static void main(String[] args) throws IOException {
@@ -63,39 +65,35 @@ public class Calculator1 {
 		int val1, val2;
 		int ans = 0;
 
-		// スタックを作る（１行分(readline分)の長さのスタック）
-		stack stackObject = new stack(array.length);
+		List<Integer> stackObject = new ArrayList<Integer>();
 
 		for (int i = 0; i < array.length; i++) {
 			// 入力が整数の場合(→文字を数字にしてpush
 			if (isInteger(array[i])) {
-				stackObject.push(Integer.parseInt(array[i]));
+				stackObject.add(Integer.parseInt(array[i]));
 			}
 			// 入力が演算子の場合(→数字をpopして計算結果をpush
 			// popする前にstackObject.getLength>2を確認、否ならreturn"エラー（逆ポーランド記法の数式を入力してください。）"
-
 			else if (array[i].equals("+") || array[i].equals("-")
 					|| array[i].equals("*") || array[i].equals("/")) {
-				if (stackObject.getLength() >= 2) {
+				int size = stackObject.size();
+				if (size >= 2) {
+					val1 = stackObject.get(size - 1);
+					val2 = stackObject.get(size - 2);
+					stackObject.remove(size - 1);
+					stackObject.remove(size - 2);
+
 					if (array[i].equals("+")) {
-						val1 = stackObject.pop();
-						val2 = stackObject.pop();
-						stackObject.push(val2 + val1);
+						stackObject.add(val2 + val1);
 					} else if (array[i].equals("-")) {
-						val1 = stackObject.pop();
-						val2 = stackObject.pop();
-						stackObject.push(val2 - val1);
+						stackObject.add(val2 - val1);
 					} else if (array[i].equals("*")) {
-						val1 = stackObject.pop();
-						val2 = stackObject.pop();
-						stackObject.push(val2 * val1);
+						stackObject.add(val2 * val1);
 					} else if (array[i].equals("/")) {
-						val1 = stackObject.pop();
-						val2 = stackObject.pop();
 						if (val1 == 0) {
 							return "エラー（０で割れません）";
 						} else {
-							stackObject.push(val2 / val1);
+							stackObject.add(val2 / val1);
 						}
 					}
 				} else {
@@ -111,7 +109,7 @@ public class Calculator1 {
 				return "エラー（数字か演算子（+,-,*,/）かexitを入力してください）";
 			}
 		}
-		ans = stackObject.pop();
+		ans = stackObject.get(0);
 		return Integer.toString(ans);
 	}// process終了
 
