@@ -8,7 +8,6 @@ package Calc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -18,9 +17,9 @@ public class Calculator1 {
 	public static void main(String[] args) throws IOException {
 
 		// ①入力を受け取る
-		InputStream inputStream = System.in;
-		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-		BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(System.in));
 
 		PrintStream printStream = System.out;
 		printStream.println("逆ポーランド記法の数式（値と値の間はスペースで区切る）を入力してください");
