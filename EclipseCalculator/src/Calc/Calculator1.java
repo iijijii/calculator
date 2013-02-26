@@ -27,36 +27,45 @@ public class Calculator1 {
 		// ③加工したものを出力する
 		while (true) {
 			String input = bufferedReader.readLine();
-			if ("exit".equals(input)) {
+			if (input.equals("exit")) {
 				printStream.println("入力終了");
 				break;
 			}
-			printStream.println(process(split(input)));
+			printStream.println(process(parse(input)));
 		}
 		System.exit(0);
 	}// main終わり
 
-	// 入力を値ごとに分解して配列を作り直す
-	public static String[] split(String regex) {
+	public static String[] parse(String formula) {
 
-		String[] s = regex.split("");
-
-		int point = 0;// ずらした数
+		String[] s = formula.split("");
+		List<String> tokens = new ArrayList<String>();
+		int tSize = tokens.size();
 		for (int i = 0; i < s.length; i++) {
-			// (1)文字が数字続きなら一つのインデックスにいれて、(２)左にずらし、(３)最後に空文字
+			if (isInteger(s[i]) && isInteger(s[i - 1])) {
+				tokens.set(tSize, tokens.get(tSize) + s[i]);
+			}
 
-			while (isInteger(s[i]) && isInteger(s[i + 1])) {
-				s[i] = s[i] + s[i + 1]; // (1
-				System.arraycopy(s, i + 2, s, i + 1, s.length - (i + 2));// (2
-				point++;
-				s[s.length - (point)] = ""; // 3
+			else if (isInteger(s[i]) || s[i].equals("+") || s[i].equals("-")
+					|| s[i].equals("*") || s[i].equals("/")) {
+				tokens.add(s[i]);
+			} else if (s[i].equals(" ") || s[i].equals("")) {// 処理しない
+			} else {// 入力が数字でも演算子でもexitでもスペースでもない場合
+				String[] err = new String[1];
+				err[0] = "e";
+				return err;
 			}
 		}
-		return s;
+		return tokens.toArray(new String[tokens.size()]);
 	}
 
 	// ②入力を加工する（計算結果を返す）
 	public static String process(String[] array) {
+
+		// 入力が数字でも演算子でもexitでもスペースでもない場合
+		if (array[0].equals("e")) {
+			return "エラー（数字か演算子（+,-,*,/）かexitを入力してください）";
+		}
 
 		int val1, val2;
 		int ans = 0;
@@ -97,13 +106,6 @@ public class Calculator1 {
 				}
 			}
 
-			// 入力がスペース
-			else if (array[i].equals(" ") || array[i].equals("")) {
-			}
-			// 入力が数字でも演算子でもexitでもスペースでもない場合
-			else {
-				return "エラー（数字か演算子（+,-,*,/）かexitを入力してください）";
-			}
 		}
 		ans = stackObject.get(0);
 		return Integer.toString(ans);
