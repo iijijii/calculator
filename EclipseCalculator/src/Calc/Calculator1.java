@@ -27,7 +27,7 @@ public class Calculator1 {
 		// ③加工したものを出力する
 		while (true) {
 			String input = bufferedReader.readLine();
-			if (input.equals("exit")) {
+			if (input.equals("exit") || input.equals("")) {
 				printStream.println("入力終了");
 				break;
 			}
