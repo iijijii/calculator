@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class Calculator1 {
@@ -44,9 +46,7 @@ public class Calculator1 {
 		for (int i = 0; i < s.length; i++) {
 			if (isInteger(s[i]) && isInteger(s[i - 1])) {
 				tokens.set(tSize, tokens.get(tSize) + s[i]);
-			}
-
-			else if (isInteger(s[i]) || s[i].equals("+") || s[i].equals("-")
+			} else if (isInteger(s[i]) || s[i].equals("+") || s[i].equals("-")
 					|| s[i].equals("*") || s[i].equals("/")) {
 				tokens.add(s[i]);
 			} else if (s[i].equals(" ") || s[i].equals("")) {// 処理しない
@@ -69,45 +69,43 @@ public class Calculator1 {
 
 		int val1, val2;
 		int ans = 0;
-
-		List<Integer> stackObject = new ArrayList<Integer>();
+		Deque<Integer> stack = new ArrayDeque<Integer>();
 
 		for (int i = 0; i < array.length; i++) {
 			// 入力が整数の場合(→文字を数字にしてpush
 			if (isInteger(array[i])) {
-				stackObject.add(Integer.parseInt(array[i]));
+				stack.addFirst(Integer.parseInt(array[i]));
 			}
 			// 入力が演算子の場合(→数字をpopして計算結果をpush
 			// popする前にstackObject.getLength>2を確認、否ならreturn"エラー（逆ポーランド記法の数式を入力してください。）"
 			else if (array[i].equals("+") || array[i].equals("-")
 					|| array[i].equals("*") || array[i].equals("/")) {
-				int size = stackObject.size();
-				if (size >= 2) {
-					val1 = stackObject.get(size - 1);
-					val2 = stackObject.get(size - 2);
-					stackObject.remove(size - 1);
-					stackObject.remove(size - 2);
+
+				int sSize = stack.size();
+				if (sSize >= 2) {
+					val1 = stack.removeFirst();
+					val2 = stack.removeFirst();
 
 					if (array[i].equals("+")) {
-						stackObject.add(val2 + val1);
+						stack.addFirst(val2 + val1);
 					} else if (array[i].equals("-")) {
-						stackObject.add(val2 - val1);
+						stack.addFirst(val2 - val1);
 					} else if (array[i].equals("*")) {
-						stackObject.add(val2 * val1);
+						stack.addFirst(val2 * val1);
 					} else if (array[i].equals("/")) {
 						if (val1 == 0) {
 							return "エラー（０で割れません）";
 						} else {
-							stackObject.add(val2 / val1);
+							stack.addFirst(val2 / val1);
 						}
 					}
 				} else {
 					return "エラー（逆ポーランド記法の数式を入力してください。）";
 				}
 			}
-
 		}
-		ans = stackObject.get(0);
+
+		ans = stack.peekFirst();
 		return Integer.toString(ans);
 	}// process終了
 
