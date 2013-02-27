@@ -74,7 +74,7 @@ public class Calculator1 {
 		for (int i = 0; i < array.length; i++) {
 			// 入力が整数の場合(→文字を数字にしてpush
 			if (isInteger(array[i])) {
-				stack.addFirst(Integer.parseInt(array[i]));
+				stack.push(Integer.parseInt(array[i]));
 			}
 			// 入力が演算子の場合(→数字をpopして計算結果をpush
 			// popする前にstackObject.getLength>2を確認、否ならreturn"エラー（逆ポーランド記法の数式を入力してください。）"
@@ -83,20 +83,20 @@ public class Calculator1 {
 
 				int sSize = stack.size();
 				if (sSize >= 2) {
-					val1 = stack.removeFirst();
-					val2 = stack.removeFirst();
+					val1 = stack.pop();
+					val2 = stack.pop();
 
 					if (array[i].equals("+")) {
-						stack.addFirst(val2 + val1);
+						stack.push(val2 + val1);
 					} else if (array[i].equals("-")) {
-						stack.addFirst(val2 - val1);
+						stack.push(val2 - val1);
 					} else if (array[i].equals("*")) {
-						stack.addFirst(val2 * val1);
+						stack.push(val2 * val1);
 					} else if (array[i].equals("/")) {
 						if (val1 == 0) {
 							return "エラー（０で割れません）";
 						} else {
-							stack.addFirst(val2 / val1);
+							stack.push(val2 / val1);
 						}
 					}
 				} else {
@@ -105,7 +105,7 @@ public class Calculator1 {
 			}
 		}
 
-		ans = stack.peekFirst();
+		ans = stack.pop();
 		return Integer.toString(ans);
 	}// process終了
 
