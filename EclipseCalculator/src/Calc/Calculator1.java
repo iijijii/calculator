@@ -41,8 +41,9 @@ public class Calculator1 {
 	public static String[] parse(String formula) {
 
 		List<String> tokens = new ArrayList<String>();
+		int point = 0/* formulaの見てるところ */;
 
-		for (int point = 0/* formulaの見てるところ */; point <= formula.length();) {
+		while (point < formula.length()) {
 			char c = formula.charAt(point);
 			if (Character.isDigit(c)) {
 				point++;
@@ -51,15 +52,14 @@ public class Calculator1 {
 					len++;
 					point++;
 				}
-				tokens.add(formula.substring(point - len, point));
-			} else if (c == ('+') || c == ('-') || c == ('*') || c == ('/')) {
-				tokens.add(String.valueOf(formula.charAt(point)));
+				tokens.add(formula.substring(point - len, point - 1));
+			} else if (c == '+' || c == '-' || c == '*' || c == '/') {
+				tokens.add(String.valueOf(c));
 				point++;
-			} else if (c == (' ')) {
+			} else if (c == ' ') {
 				point++;
 			} else {// 入力が数字でも演算子でもexitでもスペースでもない場合
-				String[] err = new String[] { "e" };
-				return err;
+				return new String[] { "e" };
 			}
 		}
 		return tokens.toArray(new String[tokens.size()]);
