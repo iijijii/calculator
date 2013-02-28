@@ -40,19 +40,25 @@ public class Calculator1 {
 
 	public static String[] parse(String formula) {
 
-		String[] s = formula.split("");
 		List<String> tokens = new ArrayList<String>();
-		int tSize = tokens.size();
-		for (int i = 0; i < s.length; i++) {
-			if (isInteger(s[i]) && isInteger(s[i - 1])) {
-				tokens.set(tSize, tokens.get(tSize) + s[i]);
-			} else if (isInteger(s[i]) || s[i].equals("+") || s[i].equals("-")
-					|| s[i].equals("*") || s[i].equals("/")) {
-				tokens.add(s[i]);
-			} else if (s[i].equals(" ") || s[i].equals("")) {// 処理しない
+
+		for (int point = 0/* formulaの見てるところ */; point <= formula.length();) {
+			char c = formula.charAt(point);
+			if (Character.isDigit(c)) {
+				point++;
+				int len = 1;// 数字が何個続くか
+				while (Character.isDigit(c)) {
+					len++;
+					point++;
+				}
+				tokens.add(formula.substring(point - len, point));
+			} else if (c == ('+') || c == ('-') || c == ('*') || c == ('/')) {
+				tokens.add(String.valueOf(formula.charAt(point)));
+				point++;
+			} else if (c == (' ')) {
+				point++;
 			} else {// 入力が数字でも演算子でもexitでもスペースでもない場合
-				String[] err = new String[1];
-				err[0] = "e";
+				String[] err = new String[] { "e" };
 				return err;
 			}
 		}
