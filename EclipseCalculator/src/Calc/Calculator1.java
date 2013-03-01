@@ -46,16 +46,12 @@ public class Calculator1 {
 		while (point < formula.length()) {
 			char c = formula.charAt(point);
 			if (Character.isDigit(c)) {
-				tokens.add(String.valueOf(c));
 				int len = 1;// pointからの数
-
 				while (point + len < formula.length()
 						&& Character.isDigit(formula.charAt(point + len))) {
 					len++;
-					tokens.set(tokens.size() - 1,
-							formula.substring(point, point + len));
-
 				}
+				tokens.add(formula.substring(point, point + len));
 				point = point + len;
 
 			} else if (c == '+' || c == '-' || c == '*' || c == '/') {
